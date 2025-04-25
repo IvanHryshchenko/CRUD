@@ -15,14 +15,18 @@ function createItem($pdo, $name, $description) {
     $sql = "INSERT INTO items (name, description) VALUES (?, ?)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$name, $description]);
-    echo "Data successfully added.<br>";
+    echo "<p class='success'>Data successfully added.</p>";
 }
 
 function readItems($pdo) {
     $sql = "SELECT * FROM items";
     $stmt = $pdo->query($sql);
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        echo $row['id'] . ": " . $row['name'] . " - " . $row['description'] . "<br>";
+        echo "<div class='record'>";
+        echo "<p><strong>ID:</strong> {$row['id']}</p>";
+        echo "<p><strong>Name:</strong> {$row['name']}</p>";
+        echo "<p><strong>Description:</strong> {$row['description']}</p>";
+        echo "</div>";
     }
 }
 
@@ -32,12 +36,13 @@ function readItemById($pdo, $id) {
     $stmt->execute([$id]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($row) {
-        echo "<h3>Record Details:</h3>";
-        echo "ID: " . $row['id'] . "<br>";
-        echo "Name: " . $row['name'] . "<br>";
-        echo "Description: " . $row['description'] . "<br>";
+        echo "<div class='record'>";
+        echo "<p><strong>ID:</strong> {$row['id']}</p>";
+        echo "<p><strong>Name:</strong> {$row['name']}</p>";
+        echo "<p><strong>Description:</strong> {$row['description']}</p>";
+        echo "</div>";
     } else {
-        echo "No record found with ID $id.<br>";
+        echo "<p class='error'>No record found with ID {$id}.</p>";
     }
 }
 
@@ -45,14 +50,14 @@ function updateItem($pdo, $id, $newName, $newDescription) {
     $sql = "UPDATE items SET name = ?, description = ? WHERE id = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$newName, $newDescription, $id]);
-    echo "Record successfully updated.<br>";
+    echo "<p class='success'>Record successfully updated.</p>";
 }
 
 function deleteItem($pdo, $id) {
     $sql = "DELETE FROM items WHERE id = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$id]);
-    echo "Record successfully deleted.<br>";
+    echo "<p class='success'>Record successfully deleted.</p>";
 }
 ?>
 
@@ -62,6 +67,43 @@ function deleteItem($pdo, $id) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRUD Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input, textarea, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+        }
+        .record {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
     <h1>CRUD Application</h1>
